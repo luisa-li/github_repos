@@ -3,7 +3,6 @@ import networkx as nx
 from pathlib import Path
 from util import notebook_to_script
 
-# TODO: CHECK THAT THIS ALL STILL WORKS, CHECK THAT VERB COUNT WORKS, AND ADD THE CODE:TEXT RATIO THING
 
 class VariableDependencyAnalyzer(ast.NodeVisitor):
     
@@ -52,5 +51,6 @@ def count_wcc(code: str) -> tuple[list[list[str]], int]:
 
 if __name__ == "__main__":
     notebook = Path("sample/0a7ef9adf5ac046721fd011e83acd6a2ef5d10/LSTM-Text-Generation/RNN-keras-Text.ipynb")
-    code = notebook_to_script(notebook, Path("."))
-    count = count_wcc(code) 
+    code = notebook_to_script(notebook)
+    count, avg = count_wcc(code) 
+    breakpoint()
