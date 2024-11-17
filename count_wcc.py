@@ -36,7 +36,7 @@ def find_wcc(graph: nx.DiGraph) -> tuple[list[list[str], int]]:
     wcc = list(nx.weakly_connected_components(graph))
     lens = [len(c) for c in wcc]
     if len(lens) == 0:
-        return 0
+        return [], 0
     else: 
         return wcc, sum(lens) / len(lens)
 
@@ -53,4 +53,3 @@ if __name__ == "__main__":
     notebook = Path("sample/0a7ef9adf5ac046721fd011e83acd6a2ef5d10/LSTM-Text-Generation/RNN-keras-Text.ipynb")
     code = notebook_to_script(notebook)
     count, avg = count_wcc(code) 
-    breakpoint()

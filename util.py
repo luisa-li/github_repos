@@ -1,7 +1,7 @@
 from nbconvert import PythonExporter
 from pathlib import Path
 import nbformat
-import subprocess
+import os
 
 
 def notebook_to_script(notebook_path: Path) -> str:
@@ -42,10 +42,10 @@ def is_valid_code(code: str) -> bool:
         return False
 
 
-def get_all_ipynb(dir): 
-    result = subprocess.run(
-        ['find', dir, '-type', 'f', '-name', '*ipynb'],
-        capture_output=True, text=True
-    )
-    files = result.stdout.strip().split('\n') if result.stdout else []
-    return files
+def get_all_notebooks(dir: Path) -> list[Path]:
+    notebooks = [] 
+    for root, _, files in os.walk(dir):
+        for file in files:
+            if file.endswith('.ipynb'):
+                notebooks.append(Path(os.path.join(root, file))) 
+    return notebooks

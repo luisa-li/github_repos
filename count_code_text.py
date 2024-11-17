@@ -1,6 +1,6 @@
 import json
 
-def parse_ipynb(file_path):
+def count_code_text(file_path):
     
     with open(file_path, 'r', encoding='utf-8') as f:
         notebook = json.load(f)

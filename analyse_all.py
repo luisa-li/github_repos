@@ -1,17 +1,10 @@
-"""Analyse all the notebooks in the three downloaded repositories and compile results"""
+"""Analyse all the notebooks in the given repository with average wcc size, verb count and code text ratio and compile the results"""
 
-import os
-import json 
-from pathlib import Path
-from count_wcc import analyse_notebook
-
-def get_all_notebooks(dir: Path) -> list[Path]:
-    notebooks = [] 
-    for root, _, files in os.walk(dir):
-        for file in files:
-            if file.endswith('.ipynb'):
-                notebooks.append(Path(os.path.join(root, file))) 
-    return notebooks
+import csv
+from util import get_all_notebooks, notebook_to_script
+from count_code_text import count_code_text
+from count_verbs import count_verbs
+from count_wcc import count_wcc
 
 
 def convert_set(obj):
@@ -20,24 +13,34 @@ def convert_set(obj):
     raise TypeError(f"Type {type(obj)} not serializable")
 
 
+def analyse_all(hexdir):
+    
+    # writing some column names 
+    with open('dataset.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["full_path", "file_name", "lines_of_code", "lines_of_text", "verb_count", "wccs", "avg_wcc_size"])
+    with open('failures.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(["full_path", "error"])
+        
+    
+    notebooks = get_all_notebooks(hexdir)
+    for path in notebooks:
+        try:
+            raw_text = notebook_to_script(path)
+            code, text = count_code_text(path)
+            verbs = count_verbs(raw_text)
+            wcc, avg_wcc_size = count_wcc(raw_text)
+            with open('dataset.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([path, path.name, code, text, verbs, wcc, avg_wcc_size])
+        except Exception as e:
+            with open('failures.csv', 'a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([path, e])
+        
+
 if __name__ == "__main__":
     
-    results = {}
-    failures = []
-    
-    dir = Path("sample")
-    script_dir = Path("scripts")
-    notebooks = get_all_notebooks(dir)
-    for notebook in notebooks:
-        try:
-            wcc, size = analyse_notebook(notebook, script_dir)
-            results[notebook.name] = {"wccs": wcc, "avg_wcc_size": size}
-        except Exception as e:
-            failures.append((notebook, e))
-    
-    with open('result.json', 'w', encoding='utf-8') as file:
-        json.dump(results, file, indent=4, default=convert_set)
-    
-    with open('failures.txt', 'w', encoding='utf-8') as file:
-        for failure in failures: 
-            file.write(str(failure) + '\n')
+    dir = 'sample'
+    analyse_all(dir)
