@@ -3,10 +3,10 @@
 import os
 import json 
 from pathlib import Path
-from analyse_dependencies import analyse_notebook
+from count_wcc import analyse_notebook
 
 def get_all_notebooks(dir: Path) -> list[Path]:
-    notebooks = []
+    notebooks = [] 
     for root, _, files in os.walk(dir):
         for file in files:
             if file.endswith('.ipynb'):
