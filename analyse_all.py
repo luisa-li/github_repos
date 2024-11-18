@@ -1,6 +1,8 @@
 """Analyse all the notebooks in the given repository with average wcc size, verb count and code text ratio and compile the results"""
 
 import csv
+import argparse
+from tqdm import tqdm
 from util import get_all_notebooks, notebook_to_script
 from count_code_text import count_code_text
 from count_verbs import count_verbs
@@ -25,7 +27,7 @@ def analyse_all(hexdir):
         
     
     notebooks = get_all_notebooks(hexdir)
-    for path in notebooks:
+    for path in tqdm(notebooks):
         try:
             raw_text = notebook_to_script(path)
             code, text = count_code_text(path)
@@ -39,8 +41,14 @@ def analyse_all(hexdir):
                 writer = csv.writer(file)
                 writer.writerow([path, e])
         
+def main():
+    
+    parser = argparse.ArgumentParser(description="Script to run through all notebook files in a given directory, and calculate a score for each")
+    parser.add_argument("directory", type=str, help="Path to the directory holding the notebooks")
+    
+    args = parser.parse_args()
+    analyse_all(args.directory)
 
 if __name__ == "__main__":
-    
-    dir = 'sample'
-    analyse_all(dir)
+
+    main() 
