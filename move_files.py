@@ -3,12 +3,12 @@ import shutil
 from pathlib import Path
 import pandas as pd
 
-def move_files(csv_path, target_dir, column):
+def move_files(csv_path, target_dir, file_column, quartile_column):
     df = pd.read_csv(csv_path)
     os.makedirs(target_dir, exist_ok=True)
     
-    for file in df[column]:
-        target = os.path.join(target_dir, Path(file).name)
+    for file, quartile in df[[file_column, quartile_column]]:
+        target = os.path.join(target_dir, quartile + str(Path(file).name))
         shutil.copy(file, target)
 
 if __name__ == "__main__":
