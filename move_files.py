@@ -5,10 +5,9 @@ import pandas as pd
 
 def move_files(csv_path, target_dir, column):
     df = pd.read_csv(csv_path)
-    os.makedirs(target_dir, exists_ok=True)
+    os.makedirs(target_dir, exist_ok=True)
     
     for file in df[column]:
-        breakpoint()
         target = os.path.join(target_dir, Path(file).name)
         shutil.copy(file, target)
 
