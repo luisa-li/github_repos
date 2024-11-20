@@ -9,8 +9,8 @@ def move_files(csv_path, target_dir, column):
     
     for file in df[column]:
         breakpoint()
-        target = os.path.join(target_dir, Path(file).stem)
-        shutil.move(file, target)
+        target = os.path.join(target_dir, Path(file).name)
+        shutil.copy(file, target)
 
 if __name__ == "__main__":
     
